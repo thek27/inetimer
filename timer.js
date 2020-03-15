@@ -44,7 +44,6 @@ module.exports = class Timer {
         if (this.pcRuleStatus=='') {
             this.waiting = true
             this.pcRuleStatus = await this.router.pcRuleStatus()
-            console.log('pcRuleStatus',this.pcRuleStatus)
             this.waiting = false
         }
         this.restTimeSecs = await this.getRestTimeSecs()
@@ -53,8 +52,7 @@ module.exports = class Timer {
             --this.restTimeSecs
         }
         if (this.restTimeSecs==0) {
-            await this.router.pcRuleOn()
-            this.pcRuleStatus='on'
+            this.pcRuleOn()
         }
         if (this.ws) {
             this.ws.send(JSON.stringify({ 'secs': this.restTimeSecs, 'rule': this.pcRuleStatus }))

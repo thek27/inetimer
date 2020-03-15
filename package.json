@@ -13,6 +13,7 @@
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
     "memcache-client": "^0.10.1",
+    "minimist": "^1.2.5",
     "puppeteer": "^2.1.1"
   }
 }

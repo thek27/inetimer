@@ -60,11 +60,21 @@ Number.prototype.pad = function(size) {
     while (s.length < (size || 2)) {s = "0" + s;}
     return s;
 }
+let t = null;
 const socket = new WebSocket('ws:'+window.location.hostname+':8000/timer/');
 socket.onopen = () => {
   socket.send('init');
 }
 socket.onmessage = e => {
+
+    clearTimeout(t);
+    t = setTimeout(function(){
+        document.getElementById('btnStart').style.display='none';
+        document.getElementById('btnStop').style.display='none';
+        document.getElementById('waiting').style.display='none';
+        document.getElementsByTagName('h1')[0].innerHTML = '--:--:--';
+    },2000);
+
     const data= JSON.parse(event.data);
     // console.log(data);
     if (data.secs>=0) {

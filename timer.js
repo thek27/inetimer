@@ -19,6 +19,7 @@ module.exports = class Timer {
         this.waiting = false
         this.pcRuleStatus = ''
         setInterval(() => { this.checkRestTimeSecs() }, 1000)
+        // memcacheClient.set(this.getKey(), 60*30, {lifetime: lifeTimeCache})
     }
 
     getKey() {
@@ -52,7 +53,11 @@ module.exports = class Timer {
             --this.restTimeSecs
         }
         if (this.ws) {
-            this.ws.send(JSON.stringify({ 'secs': this.restTimeSecs, 'rule': this.pcRuleStatus }))
+            try {
+                this.ws.send(JSON.stringify({ 'secs': this.restTimeSecs, 'rule': this.pcRuleStatus }))
+            }
+            catch(e) {
+            }
         }
         memcacheClient.set(this.getKey(), this.restTimeSecs, {lifetime: lifeTimeCache})
 

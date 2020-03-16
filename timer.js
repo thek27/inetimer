@@ -48,16 +48,17 @@ module.exports = class Timer {
         }
         this.restTimeSecs = await this.getRestTimeSecs()
         // console.log('restTimeSecs ',this.restTimeSecs)
-        if (this.pcRuleStatus>0 && this.pcRuleStatus=='off') {
+        if (this.restTimeSecs>0 && this.pcRuleStatus=='off') {
             --this.restTimeSecs
-        }
-        if (this.restTimeSecs==0) {
-            await this.pcRuleOn()
         }
         if (this.ws) {
             this.ws.send(JSON.stringify({ 'secs': this.restTimeSecs, 'rule': this.pcRuleStatus }))
         }
         memcacheClient.set(this.getKey(), this.restTimeSecs, {lifetime: lifeTimeCache})
+
+        if (this.restTimeSecs==0) {
+            await this.pcRuleOn()
+        }
     }
 
     async pcRuleOn() {

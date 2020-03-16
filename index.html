@@ -67,7 +67,7 @@ socket.onopen = () => {
 socket.onmessage = e => {
     const data= JSON.parse(event.data);
     // console.log(data);
-    if (data.secs) {
+    if (data.secs>=0) {
         let s = data.secs
         const h = parseInt(s/3600)
         s-=h*3600
@@ -75,12 +75,16 @@ socket.onmessage = e => {
         s-=m*60
         document.getElementsByTagName('h1')[0].innerHTML = h.pad() + ':' + m.pad() + ':' + s.pad()
     }
-    if (data.rule=='on') {
+    if (data.secs==0) {
+        document.getElementById('btnStart').style.display='none';
+        document.getElementById('btnStop').style.display='none';
+    }
+    else if (data.rule=='on') {
         document.getElementById('btnStart').style.display='';
         document.getElementById('btnStop').style.display='none';
         document.getElementById('waiting').style.display='none';
     }
-    if (data.rule=='off') {
+    else if (data.rule=='off') {
         document.getElementById('btnStart').style.display='none';
         document.getElementById('btnStop').style.display='';
         document.getElementById('waiting').style.display='none';

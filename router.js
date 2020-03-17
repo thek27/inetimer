@@ -44,10 +44,14 @@ module.exports = class Router {
         console.log('Login')
         let page = await this.page()
         await page.goto('http://192.168.1.1')
-        await page.type('#Frm_Username', 'admin')
-        await page.type('#Frm_Password', '7w@hkr85bVhJwx5')
-        await page.click('#LoginId')
-        await page.waitForNavigation()
+        try {
+            await page.type('#Frm_Username', 'admin')
+            await page.type('#Frm_Password', '7w@hkr85bVhJwx5')
+            await page.click('#LoginId')
+            await page.waitForNavigation()
+        } 
+        catch (e) {
+        }
         const cookies = await page.cookies()
         await page.close()
 

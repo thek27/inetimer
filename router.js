@@ -41,7 +41,8 @@ module.exports = class Router {
     }
 
     async login() {
-        console.log('Login')
+        const dt = new Date();
+        console.log('Login at '+dt.toString());
         let page = await this.page()
         await page.goto('http://192.168.1.1')
         try {

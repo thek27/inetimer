@@ -13,6 +13,9 @@
 }
 body {
     background: black;
+    text-align: left;
+    padding: 0px 20px;
+    margin: 0;
 }
 button {
     display:inline-block;
@@ -51,7 +54,7 @@ button.stop {
 </head>
 <body>
 <h1>--:--:--</h1>
-<img id="waiting" src="waiting.gif">
+<img style="position:absolute;top:30px" id="waiting" src="waiting.gif">
 <button id="btnStart" onclick="action('start')" style="display:none" class="start">Start</button>
 <button id="btnStop" onclick="action('stop')" style="display:none" class="stop">Stop</button>
 <script>
@@ -68,14 +71,15 @@ socket.onopen = () => {
 socket.onmessage = e => {
 
     clearTimeout(t);
+    const data= JSON.parse(event.data);
+    if (data.rule=='') return;
+
     t = setTimeout(function(){
         document.getElementById('btnStart').style.display='none';
         document.getElementById('btnStop').style.display='none';
-        document.getElementById('waiting').style.display='none';
         document.getElementsByTagName('h1')[0].innerHTML = '--:--:--';
     },2000);
 
-    const data= JSON.parse(event.data);
     // console.log(data);
     if (data.secs>=0) {
         let s = data.secs
@@ -88,6 +92,7 @@ socket.onmessage = e => {
     if (data.secs==0) {
         document.getElementById('btnStart').style.display='none';
         document.getElementById('btnStop').style.display='none';
+        document.getElementById('waiting').style.display='none';
     }
     else if (data.rule=='on') {
         document.getElementById('btnStart').style.display='';
@@ -101,9 +106,9 @@ socket.onmessage = e => {
     }
 }
 function action(cmd) {
-    document.getElementById('waiting').style.display='';
-    document.getElementById('btnStart').style.display='';
+    document.getElementById('btnStart').style.display='none';
     document.getElementById('btnStop').style.display='none';
+    document.getElementById('waiting').style.display='';
     socket.send(cmd);
 }
 </script>

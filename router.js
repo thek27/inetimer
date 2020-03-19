@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer')
 module.exports = class Router {
     constructor () {
         puppeteer.launch({
-            headless: true,
+            headless: false,
             // ignoreDefaultArgs: true,
             defaultViewport: {
                 width: 1920,
@@ -97,16 +97,16 @@ module.exports = class Router {
     async pcRuleOn() {
         const page = await this.inject('pcRuleOn();')
         await page.close()
-        await this.logout()
         console.log('pcRuleOn')
+        await this.logout()
         return 'on'
     }
 
     async pcRuleOff() {
         const page = await this.inject('pcRuleOff();')
         await page.close()
-        await this.logout()
         console.log('pcRuleOff')
+        await this.logout()
         return 'off'
     }
 }

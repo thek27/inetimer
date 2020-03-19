@@ -19,7 +19,8 @@ module.exports = class Timer {
         this.waiting = false
         this.pcRuleStatus = ''
         setInterval(() => { this.checkRestTimeSecs() }, 1000)
-        // memcacheClient.set(this.getKey(), 60*30, {lifetime: lifeTimeCache})
+        setInterval(() => { this.checkRuleStatus() }, 1000 * 60 * 10)
+        // memcacheClient.set(this.getKey(), 60*60*1, {lifetime: lifeTimeCache})
     }
 
     getKey() {
@@ -36,6 +37,13 @@ module.exports = class Timer {
             memcacheClient.set(key, initTimeSecs, {lifetime: lifeTimeCache})
             return initTimeSecs
         })
+    }
+
+    async checkRuleStatus() {
+        if (this.waiting) {
+            return
+        }
+        this.pcRuleStatus = await this.router.pcRuleStatus()
     }
 
     async checkRestTimeSecs() {
@@ -61,19 +69,27 @@ module.exports = class Timer {
         }
         memcacheClient.set(this.getKey(), this.restTimeSecs, {lifetime: lifeTimeCache})
 
-        if (this.restTimeSecs==0) {
+        if (this.restTimeSecs==0 && this.pcRuleStatus=='off') {
             await this.pcRuleOn()
         }
     }
 
     async pcRuleOn() {
+        if (this.waiting) {
+            return
+        }
         this.waiting = true
+        this.pcRuleStatus = '';
         this.pcRuleStatus = await this.router.pcRuleOn()
         this.waiting = false
     }
 
     async pcRuleOff() {
+        if (this.waiting) {
+            return
+        }
         this.waiting = true
+        this.pcRuleStatus = '';
         this.pcRuleStatus = await this.router.pcRuleOff()
         this.waiting = false
     }

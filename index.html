@@ -4,6 +4,12 @@
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <title>Router</title>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+function panelShow() {
+    document.getElementById('panel').style.display='';
+}
+</script>
 <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
 <meta name="viewport" content="width=device-width" />
 <style>
@@ -53,10 +59,16 @@ button.stop {
 </style>
 </head>
 <body>
-<h1>--:--:--</h1>
-<img style="position:absolute;top:30px" id="waiting" src="waiting.gif">
-<button id="btnStart" onclick="action('start')" style="display:none" class="start">Start</button>
-<button id="btnStop" onclick="action('stop')" style="display:none" class="stop">Stop</button>
+<h1 style="margin-left:20px;">--:--:--</h1>
+<div id="recaptcha" class="g-recaptcha" data-callback="panelShow" data-size="compact" data-theme="dark" 
+    data-sitekey="6Lfn9-IUAAAAANvu3vn9VoPpJd4gOTeKYrbp6RF1"></div>
+<div id="waiting" style="width:156px;height:136px;background: black;position: absolute;top:66px;left:21px">
+    <img style="position:relative;left:15px;top:20px;" src="waiting.gif">
+</div>
+<div style="display:none;margin-top:10px;margin-left:10px;position: relative;" id="panel">
+    <button id="btnStart" onclick="action('start')" style="display:none" class="start">Start</button>
+    <button id="btnStop" onclick="action('stop')" style="display:none" class="stop">Stop</button>
+</div>
 <script>
 Number.prototype.pad = function(size) {
     var s = String(this);
@@ -77,6 +89,7 @@ socket.onmessage = e => {
     t = setTimeout(function(){
         document.getElementById('btnStart').style.display='none';
         document.getElementById('btnStop').style.display='none';
+        document.getElementById('recaptcha').style.display='none';
         document.getElementsByTagName('h1')[0].innerHTML = '--:--:--';
     },2000);
 

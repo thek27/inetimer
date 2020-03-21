@@ -20,7 +20,7 @@ module.exports = class Timer {
         this.pcRuleStatus = ''
         setInterval(() => { this.checkRestTimeSecs() }, 1000)
         setInterval(() => { this.checkRuleStatus() }, 1000 * 60 * 10)
-        // memcacheClient.set(this.getKey(), 60*60*1, {lifetime: lifeTimeCache})
+        // memcacheClient.set(this.getKey(), 60*60*3.5, {lifetime: lifeTimeCache})
     }
 
     getKey() {

@@ -70,8 +70,7 @@ module.exports = class Router {
         await page.close()
     }
 
-    async inject(func) {
-        const page = await this.login()
+    async inject(page,func) {
         await page.evaluate(scriptText => {
             const el = document.createElement('script');
             el.type = 'text/javascript';
@@ -81,32 +80,41 @@ module.exports = class Router {
         return page
     }
 
-    async pcRuleStatus() {
-        const page = await this.inject('pcRuleStatus();')
+    async injectStatus(page) {
+        await this.inject(page,'pcRuleStatus();')
         await page.waitForFunction(`document.querySelector('#pcRuleStatus').value !== ''`)
         const pcRuleStatus = await page.evaluate(()=>{
             return document.querySelector('#pcRuleStatus').innerText
         })
         console.log('pcRuleStatus: '+pcRuleStatus)
+        return pcRuleStatus
+    }
+
+    async pcRuleStatus() {
+        const page = await this.login()
+        const pcRuleStatus = await this.injectStatus(page)
         await page.close()
         await this.logout()
-        
         return (pcRuleStatus=='1') ? 'on' : 'off'
     }
 
     async pcRuleOn() {
-        const page = await this.inject('pcRuleOn();')
+        const page = await this.login()
+        await this.inject(page,'pcRuleOn();')
+        const pcRuleStatus = await this.injectStatus(page)
         await page.close()
         console.log('pcRuleOn')
         await this.logout()
-        return 'on'
+        return (pcRuleStatus=='1') ? 'on' : 'off'
     }
 
     async pcRuleOff() {
-        const page = await this.inject('pcRuleOff();')
+        const page = await this.login()
+        await this.inject(page,'pcRuleOff();')
+        const pcRuleStatus = await this.injectStatus(page)
         await page.close()
         console.log('pcRuleOff')
         await this.logout()
-        return 'off'
+        return (pcRuleStatus=='1') ? 'on' : 'off'
     }
 }

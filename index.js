@@ -23,6 +23,15 @@ app.get('/waiting.gif', async function (req, res) {
     })
 })
 
+app.get('/hour', async function (req, res) {
+    res.send('not ok')
+})
+
+app.get('/hour/add', async function (req, res) {
+    timer.addHour()
+    res.send('ok')
+})
+
 app.ws('/timer', async (ws, req) => {
     
     ws.on('message', msg => {

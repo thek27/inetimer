@@ -20,7 +20,13 @@ module.exports = class Timer {
         this.pcRuleStatus = ''
         setInterval(() => { this.checkRestTimeSecs() }, 1000)
         setInterval(() => { this.checkRuleStatus() }, 1000 * 60 * 10)
-        // memcacheClient.set(this.getKey(), 60*60*3.5, {lifetime: lifeTimeCache})
+        // memcacheClient.set(this.getKey(), 60*60*2, {lifetime: lifeTimeCache})
+    }
+
+    async addHour() {
+        this.restTimeSecs = await this.getRestTimeSecs()
+        this.restTimeSecs+=60*60
+        memcacheClient.set(this.getKey(), this.restTimeSecs, {lifetime: lifeTimeCache})
     }
 
     getKey() {
@@ -33,7 +39,7 @@ module.exports = class Timer {
     async getRestTimeSecs() {
         const key = this.getKey()
         return memcacheClient.get(key).then(async (data, error) => {
-            if (data) return data.value
+            if (data) return data.value || 0
             memcacheClient.set(key, initTimeSecs, {lifetime: lifeTimeCache})
             return initTimeSecs
         })
@@ -44,6 +50,12 @@ module.exports = class Timer {
             return
         }
         this.pcRuleStatus = await this.router.pcRuleStatus()
+        let s = this.restTimeSecs
+        const h = parseInt(s/3600)
+        s-=h*3600
+        const m = parseInt(s/60)
+        s-=m*60
+        console.log('RestTime: '+h.pad(2)+':'+m.pad(2)+':'+s.pad(2))
     }
 
     async checkRestTimeSecs() {

@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer')
 module.exports = class Router {
     constructor () {
         puppeteer.launch({
-            headless: false,
+            // headless: false,
             // ignoreDefaultArgs: true,
             defaultViewport: {
                 width: 1920,

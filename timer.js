@@ -18,6 +18,7 @@ module.exports = class Timer {
         this.router = router
         this.waiting = false
         this.pcRuleStatus = ''
+        this.restTimeSecs = 0;
         setInterval(() => { this.checkRestTimeSecs() }, 1000)
         setInterval(() => { this.checkRuleStatus() }, 1000 * 60 * 10)
         // memcacheClient.set(this.getKey(), 60*60*2, {lifetime: lifeTimeCache})
@@ -31,7 +32,7 @@ module.exports = class Timer {
 
     getKey() {
         const dt = new Date()
-        dt.setHours(dt.getHours() - 2) // every day start at 02:00
+        dt.setHours(dt.getHours() + 22) // every day start at 22:00
         const fakeToday = dt.getFullYear()+(dt.getMonth()+1).pad(2)+dt.getDate().pad(2)
         return 'pcRuleSecs'+fakeToday
     }
@@ -40,7 +41,7 @@ module.exports = class Timer {
         const key = this.getKey()
         return memcacheClient.get(key).then(async (data, error) => {
             if (data) return data.value || 0
-            memcacheClient.set(key, initTimeSecs, {lifetime: lifeTimeCache})
+            memcacheClient.set(key, this.restTimeSecs + initTimeSecs, {lifetime: lifeTimeCache})
             return initTimeSecs
         })
     }
